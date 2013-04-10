@@ -5,10 +5,10 @@ import (
   "wiki/entity"
 )
 
-type Page struct {
+type WikiPage struct {
 }
 
-func (repo Page) LoadPage(title string) (*entity.Page, error) {
+func (repo WikiPage) LoadPage(title string) (*entity.Page, error) {
   filename := title + ".txt"
   body, err := ioutil.ReadFile(filename)
 
@@ -19,7 +19,7 @@ func (repo Page) LoadPage(title string) (*entity.Page, error) {
   return &entity.Page{Title: title, Body: body}, nil
 }
 
-func (repo Page) SavePage(p *entity.Page) error {
+func (repo WikiPage) SavePage(p *entity.Page) error {
   filename := p.Title + ".txt"
   return ioutil.WriteFile(filename, p.Body, 0600)
 }

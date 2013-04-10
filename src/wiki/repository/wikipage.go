@@ -1,4 +1,4 @@
-package repository
+package wikipage
 
 import (
   "wiki/entity"
@@ -11,3 +11,4 @@ type Saver interface {
 type Loader interface {
   LoadPage() error
 }
+
