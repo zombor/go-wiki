@@ -13,15 +13,24 @@ var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
 
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
+  repository := file.Page{}
+
   title := r.URL.Path[lenPath:]
-  p, _ := file.LoadPage(title)
+  p, err := repository.LoadPage(title)
+
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
 
   renderTemplate(w, "view", p)
 }
 
 func editHandler(w http.ResponseWriter, r *http.Request) {
+  repository := file.Page{}
+
   title := r.URL.Path[lenPath:]
-  p, err := file.LoadPage(title)
+  p, err := repository.LoadPage(title)
 
   if err != nil {
     p = &entity.Page{Title: title}
@@ -33,8 +42,9 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 func saveHandler(w http.ResponseWriter, r *http.Request) {
   title := r.URL.Path[lenPath:]
   body := r.FormValue("body")
+  repository := file.Page{}
 
-  err := wikipage.ExecuteSave(file, title, []byte(body))
+  err := wikipage.ExecuteSave(repository, title, []byte(body))
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
     return
