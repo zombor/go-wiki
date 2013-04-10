@@ -3,6 +3,7 @@ package main
 import (
   "wiki/entity"
   "wiki/repository/file"
+  "wiki/usecase/wikipage"
   "net/http"
   "html/template"
 )
@@ -33,8 +34,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
   title := r.URL.Path[lenPath:]
   body := r.FormValue("body")
 
-  p := &entity.Page{Title: title, Body: []byte(body)}
-  err := file.SavePage(p)
+  err := wikipage.ExecuteSave(file, title, []byte(body))
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
     return
