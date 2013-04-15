@@ -9,6 +9,6 @@ type Saver interface {
 }
 
 type Loader interface {
-  LoadPage() error
+  LoadPage(title string) (*entity.Page, error)
 }
 
