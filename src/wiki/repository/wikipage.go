@@ -1,4 +1,4 @@
-package wikipage
+package repository
 
 import (
   "wiki/entity"
@@ -11,4 +11,3 @@ type Saver interface {
 type Loader interface {
   LoadPage(title string) (*entity.Page, error)
 }
-

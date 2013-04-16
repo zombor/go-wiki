@@ -1,14 +1,14 @@
-package file
+package repository
 
 import (
   "io/ioutil"
   "wiki/entity"
 )
 
-type WikiPage struct {
+type FileWikiPageRepository struct {
 }
 
-func (repo WikiPage) LoadPage(title string) (*entity.Page, error) {
+func (repo FileWikiPageRepository) LoadPage(title string) (*entity.Page, error) {
   filename := title + ".txt"
   body, err := ioutil.ReadFile(filename)
 
@@ -19,7 +19,7 @@ func (repo WikiPage) LoadPage(title string) (*entity.Page, error) {
   return &entity.Page{Title: title, Body: body}, nil
 }
 
-func (repo WikiPage) SavePage(p *entity.Page) error {
+func (repo FileWikiPageRepository) SavePage(p *entity.Page) error {
   filename := p.Title + ".txt"
   return ioutil.WriteFile(filename, p.Body, 0600)
 }

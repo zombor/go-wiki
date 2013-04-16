@@ -2,7 +2,7 @@ package main
 
 import (
   "wiki/entity"
-  "wiki/repository/file"
+  "wiki/repository"
   "wiki/usecase"
   "net/http"
   "html/template"
@@ -13,7 +13,7 @@ var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
 
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
-  repository := file.WikiPage{}
+  repository := repository.FileWikiPageRepository{}
   usecase := usecase.LoadWikipage{PageRepository: repository}
 
   title := r.URL.Path[lenPath:]
@@ -28,7 +28,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func editHandler(w http.ResponseWriter, r *http.Request) {
-  repository := file.WikiPage{}
+  repository := repository.FileWikiPageRepository{}
   usecase := usecase.LoadWikipage{PageRepository: repository}
 
   title := r.URL.Path[lenPath:]
@@ -44,7 +44,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 func saveHandler(w http.ResponseWriter, r *http.Request) {
   title := r.URL.Path[lenPath:]
   body := r.FormValue("body")
-  repository := file.WikiPage{}
+  repository := repository.FileWikiPageRepository{}
   usecase := usecase.SaveWikipage{PageRepository: repository}
 
   err := usecase.Execute(title, []byte(body))

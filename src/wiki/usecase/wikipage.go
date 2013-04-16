@@ -6,7 +6,7 @@ import (
 )
 
 type SaveWikipage struct {
-  PageRepository wikipage.Saver
+  PageRepository repository.Saver
 }
 
 func (u *SaveWikipage) Execute(title string, body []byte) error {
@@ -15,7 +15,7 @@ func (u *SaveWikipage) Execute(title string, body []byte) error {
 }
 
 type LoadWikipage struct {
-  PageRepository wikipage.Loader
+  PageRepository repository.Loader
 }
 
 func (u *LoadWikipage) Execute(title string) (*entity.Page, error) {
