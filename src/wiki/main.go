@@ -1,11 +1,14 @@
 package main
 
 import (
+  "fmt"
   "wiki/entity"
   "wiki/repository"
   "wiki/usecase"
+  "wiki/view"
   "net/http"
   "html/template"
+  "github.com/hoisie/mustache"
 )
 
 const lenPath = len("/view/")
@@ -20,7 +23,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
   p, err := usecase.Execute(title)
 
   if err != nil {
-    http.Error(w, err.Error(), http.StatusInternalServerError)
+    http.Redirect(w, r, "/edit/"+title, http.StatusFound)
     return
   }
 
@@ -57,11 +60,9 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p *entity.Page) {
-  err := templates.ExecuteTemplate(w, tmpl+".html", p)
-
-  if err != nil {
-    http.Error(w, err.Error(), http.StatusInternalServerError)
-  }
+  view := view.Page{Content: p}
+  output := mustache.RenderFile(tmpl+".mustache", view)
+  fmt.Fprintf(w, output)
 }
 
 func main() {
