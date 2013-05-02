@@ -12,7 +12,7 @@ import (
 )
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
-  usecase := usecase.LoadWikipage{PageRepository: repository.FileWikiPageRepository{}}
+  usecase := usecase.NewLoadWikipage(repository.FileWikiPageRepository{})
 
   vars := mux.Vars(r)
   title := vars["title"]
@@ -28,7 +28,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func editHandler(w http.ResponseWriter, r *http.Request) {
-  usecase := usecase.LoadWikipage{PageRepository: repository.FileWikiPageRepository{}}
+  usecase := usecase.NewLoadWikipage(repository.FileWikiPageRepository{})
 
   vars := mux.Vars(r)
   title := vars["title"]
@@ -45,7 +45,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   title := vars["title"]
   body := r.FormValue("body")
-  usecase := usecase.SaveWikipage{PageRepository: repository.FileWikiPageRepository{}}
+  usecase := usecase.NewSaveWikipage(repository.FileWikiPageRepository{})
 
   err := usecase.Execute(title, []byte(body))
   if err != nil {
