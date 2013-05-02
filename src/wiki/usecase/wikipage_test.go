@@ -2,31 +2,13 @@ package usecase
 
 import (
   "wiki/entity"
-  "errors"
+  "wiki/repository"
   "github.com/orfjackal/gospec/src/gospec"
   . "github.com/orfjackal/gospec/src/gospec"
 )
 
-type Repository struct {
-  Pages map[string]*entity.Page
-}
-
-func (repo Repository) SavePage(p *entity.Page) error {
-  repo.Pages[p.Title] = p
-
-  if true == false {
-    return errors.New("foobar")
-  }
-
-  return nil
-}
-
-func (repo Repository) LoadPage(title string) (*entity.Page, error) {
-  return repo.Pages[title], nil
-}
-
 func WikipageSpec(c gospec.Context) {
-  repository := Repository{}
+  repository := repository.MemoryWikiPageRepository{}
   repository.Pages = make(map[string]*entity.Page)
 
   c.Specify("Saves a wiki page", func() {

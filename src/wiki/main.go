@@ -7,22 +7,19 @@ import (
   "wiki/usecase"
   "wiki/view"
   "net/http"
-  "html/template"
   "github.com/hoisie/mustache"
+  "github.com/gorilla/mux"
 )
 
-const lenPath = len("/view/")
-var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
-
-
 func viewHandler(w http.ResponseWriter, r *http.Request) {
-  repository := repository.FileWikiPageRepository{}
-  usecase := usecase.LoadWikipage{PageRepository: repository}
+  usecase := usecase.LoadWikipage{PageRepository: repository.FileWikiPageRepository{}}
 
-  title := r.URL.Path[lenPath:]
+  vars := mux.Vars(r)
+  title := vars["title"]
   p, err := usecase.Execute(title)
 
   if err != nil {
+    fmt.Println(err)
     http.Redirect(w, r, "/edit/"+title, http.StatusFound)
     return
   }
@@ -31,10 +28,10 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func editHandler(w http.ResponseWriter, r *http.Request) {
-  repository := repository.FileWikiPageRepository{}
-  usecase := usecase.LoadWikipage{PageRepository: repository}
+  usecase := usecase.LoadWikipage{PageRepository: repository.FileWikiPageRepository{}}
 
-  title := r.URL.Path[lenPath:]
+  vars := mux.Vars(r)
+  title := vars["title"]
   p, err := usecase.Execute(title)
 
   if err != nil {
@@ -45,10 +42,10 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveHandler(w http.ResponseWriter, r *http.Request) {
-  title := r.URL.Path[lenPath:]
+  vars := mux.Vars(r)
+  title := vars["title"]
   body := r.FormValue("body")
-  repository := repository.FileWikiPageRepository{}
-  usecase := usecase.SaveWikipage{PageRepository: repository}
+  usecase := usecase.SaveWikipage{PageRepository: repository.FileWikiPageRepository{}}
 
   err := usecase.Execute(title, []byte(body))
   if err != nil {
@@ -66,8 +63,10 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *entity.Page) {
 }
 
 func main() {
-  http.HandleFunc("/view/", viewHandler)
-  http.HandleFunc("/edit/", editHandler)
-  http.HandleFunc("/save/", saveHandler)
+  r := mux.NewRouter()
+  r.HandleFunc("/view/{title}", viewHandler)
+  r.HandleFunc("/edit/{title}", editHandler)
+  r.HandleFunc("/save/{title}", saveHandler)
+  http.Handle("/", r)
   http.ListenAndServe(":8080", nil)
 }

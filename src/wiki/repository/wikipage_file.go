@@ -1,9 +1,14 @@
 package repository
 
 import (
-  "io/ioutil"
   "wiki/entity"
+  "io/ioutil"
 )
+
+type WikipageRepository interface {
+  SavePage(p *entity.Page) error
+  LoadPage(title string) (*entity.Page, error)
+}
 
 type FileWikiPageRepository struct {
 }
